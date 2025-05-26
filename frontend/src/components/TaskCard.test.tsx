@@ -1,6 +1,34 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { TaskCard } from './TaskCard';
 import { Task, TaskStatus } from '@/types/Task';
+import { useRouter } from 'next/router';
+
+jest.mock('next/router', () => ({
+  useRouter: jest.fn()
+}));
+
+const mockRouter = {
+  push: jest.fn(),
+  prefetch: jest.fn(),
+  pathname: '/',
+  route: '/',
+  asPath: '/',
+  query: {},
+  basePath: '',
+  isLocaleDomain: false,
+  isReady: true,
+  isFallback: false,
+  isPreview: false,
+  events: {
+    on: jest.fn(),
+    off: jest.fn(),
+    emit: jest.fn(),
+  },
+  locale: undefined,
+  locales: undefined,
+  defaultLocale: undefined,
+};
 
 const mockTask: Task = {
   id: '1',
@@ -17,6 +45,7 @@ const mockOnStatusChange = jest.fn();
 describe('TaskCard', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    (useRouter as jest.Mock).mockReturnValue(mockRouter);
   });
 
   it('renders task information correctly', () => {
@@ -75,5 +104,20 @@ describe('TaskCard', () => {
 
     const completeButton = screen.queryByRole('button', { name: /check circle/i });
     expect(completeButton).not.toBeInTheDocument();
+  });
+
+  it('navigates to edit page when edit button is clicked', () => {
+    render(
+      <TaskCard
+        task={mockTask}
+        onDelete={mockOnDelete}
+        onStatusChange={mockOnStatusChange}
+      />
+    );
+
+    const editButton = screen.getByRole('button', { name: /edit/i });
+    fireEvent.click(editButton);
+
+    expect(mockRouter.push).toHaveBeenCalledWith(`/tarefas/editar/${mockTask.id}`);
   });
 }); 

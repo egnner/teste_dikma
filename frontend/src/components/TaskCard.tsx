@@ -50,14 +50,29 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onDelete, onStatusChan
             />
           </div>
           <div className="flex flex-col gap-1">
-            <IconButton onClick={handleEdit} size="small" color="primary">
+            <IconButton 
+              onClick={handleEdit} 
+              size="small" 
+              color="primary"
+              aria-label="edit"
+            >
               <EditIcon />
             </IconButton>
-            <IconButton onClick={() => onDelete(task.id)} size="small" color="error">
+            <IconButton 
+              onClick={() => onDelete(task.id)} 
+              size="small" 
+              color="error"
+              aria-label="delete"
+            >
               <DeleteIcon />
             </IconButton>
             {task.status !== TaskStatus.COMPLETED && (
-              <IconButton onClick={handleComplete} size="small" color="success">
+              <IconButton 
+                onClick={handleComplete} 
+                size="small" 
+                color="success"
+                aria-label="check circle"
+              >
                 <CheckCircleIcon />
               </IconButton>
             )}
